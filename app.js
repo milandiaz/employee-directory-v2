@@ -1,8 +1,10 @@
 import express from "express";
 const app = express();
-export default app;
 
-import employees from "#db/employees";
+import employees from "./db/employees.js";
+app.use(express.json());
+
+export default app;
 
 app.route("/").get((req, res) => {
   res.send("Hello employees!");
@@ -10,6 +12,28 @@ app.route("/").get((req, res) => {
 
 app.route("/employees").get((req, res) => {
   res.send(employees);
+});
+
+app.route("/employees").post((req, res) => {
+  if (!req.body) {
+    return res.status(400).send("Request body is required.");
+  }
+
+  const { name } = req.body;
+
+  if (!name || name.trim() === "") {
+    return res.status(400).send("Name is required and cannot be empty.");
+  }
+
+  const maxId =
+    employees.length > 0 ? Math.max(...employees.map((emp) => emp.id)) : 0;
+  const newEmployee = {
+    id: maxId + 1,
+    name: name.trim(),
+  };
+
+  employees.push(newEmployee);
+  res.status(201).send(newEmployee);
 });
 
 // Note: this middleware has to come first! Otherwise, Express will treat

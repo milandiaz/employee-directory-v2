@@ -1,11 +1,11 @@
 // Import the express library
 import express from "express";
+import { getEmployees, addEmployee } from "../employees.js";
 
 // Create a router
 const router = express.Router();
 
 // Export the router
-export default router;
 
 // import functions from ../db/numbers.js
 import { getEmployees, addEmployee } from "./employees.js";
@@ -25,6 +25,8 @@ router
       return res.status(400).send("Name is not correctly provided.");
     }
 
-    const newEmployee = addEmployee(req.body.name);
-    res.status(201).send(employee);
+    const newEmployee = addEmployee(req.body);
+    res.status(201).send(newEmployee);
   });
+
+export default router;
